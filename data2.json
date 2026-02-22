@@ -40,6 +40,13 @@
         "element": "Physical",
         "role": "Cowboy's Got Business",
         "age": "+25 years"
+    },
+    {
+        "name": "Dan Heng IL",
+        "path": "Destruction",
+        "element": "Imaginary",
+        "role": "High Elder of a Past Age",
+        "age": "+700 years"
     }
 
 ]
