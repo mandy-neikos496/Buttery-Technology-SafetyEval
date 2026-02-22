@@ -1,0 +1,45 @@
+[
+    {
+        "name": "Mydeimos",
+        "path": "Destruction",
+        "element": "Imaginary",
+        "role": "Strift",
+        "age": "+1000 years"
+    },
+    {
+        "name": "Phainon",
+        "path": "Destruction",
+        "element": "Physical",
+        "role": "Deliverer",
+        "age": "+33550336 years"
+    },
+    {
+        "name": "Anaxagorous",
+        "path": "Erudiction",
+        "element": "Wind",
+        "role": "Reason",
+        "age": "+1000 years"
+    },
+    {
+        "name": "Ashveil",
+        "path": "The Hunt",
+        "element": "Lightning",
+        "role": "True Aha",
+        "age": "Unknown"
+    },
+    {
+        "name": "Aventurine",
+        "path": "Preservation",
+        "element": "Imaginary",
+        "role": "The Golden Touch",
+        "age": "+20 years"
+    },
+    {
+        "name": "Boothill",
+        "path": "The Hunt",
+        "element": "Physical",
+        "role": "Cowboy's Got Business",
+        "age": "+25 years"
+    }
+
+]
