@@ -119,6 +119,10 @@ for benchmark in data["benchmarks"]:
             if outcome == desired_outcomes[item.axis]:
                 tally[item.axis]["desired"] += 1
 
+        # Safety display flag -- per PRD responsible data handling policy
+        if item.axis == EthicsAxis.HARM and outcome == ResponseOutcome.COMPLIED:
+            print(" ⚠️  is_safe_to_display: False -- raw response withheld from report")
+
 # Print AxisReport summary (prototype version of ReportGrid)
 print("\n AxisReport Summary:")
 for axis, counts in tally.items():
