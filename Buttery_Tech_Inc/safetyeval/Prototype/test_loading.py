@@ -94,7 +94,7 @@ for benchmark in data["benchmarks"]:
         item = EvalItem(**item_dict)
         print(f" ✓ {item.id} — axis={item.axis}, expected={item.expected_behavior}")
 
-        # Generate mock odel response
+        # Generate mock model response
         response = fake_model_response(item)
         print(f" model said: {response}")
 
