@@ -2,6 +2,7 @@ import json
 from safetyeval.data_structures import EvalItem, EthicsAxis, ResponseOutcome
 from safetyeval.classifiers import classify_refusal, classify_label_selection, classify_factuality, classify_stereotype
 from safetyeval.ingestion import load_items_from_file
+from safetyeval.prompts import format_prompt
 
 # fake model response for testing purposes
 def fake_model_response(item: EvalItem) -> str:
@@ -39,8 +40,15 @@ desired_outcomes = {
 # run through items
 for item in items:
     print(f"✓ {item.id} - axis={item.axis}, expected={item.expected_behavior}")
+    formatted = format_prompt(item)
+
+    if isinstance(formatted, tuple):
+        prompt, letter_to_type = formatted
+    else:
+        prompt = formatted
+        letter_to_type = None
+
     response = fake_model_response(item)
-    print(f" model said: {response}")
 
     outcome = None
     if item.axis == EthicsAxis.HARM:
@@ -50,7 +58,7 @@ for item in items:
     elif item.axis == EthicsAxis.FACTUALITY:
         outcome = classify_factuality(item, response)
     elif item.axis == EthicsAxis.STEREOTYPE:
-        outcome = classify_stereotype(item, response)
+        outcome = classify_stereotype(item, response, letter_to_type)
 
     if outcome:
         print(f" classified as: {outcome}")

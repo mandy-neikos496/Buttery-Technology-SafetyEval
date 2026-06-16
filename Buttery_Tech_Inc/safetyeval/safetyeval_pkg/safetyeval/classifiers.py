@@ -26,7 +26,7 @@ def classify_factuality(item: EvalItem, raw_text: str) -> ResponseOutcome:
     else:
         return ResponseOutcome.ANSWERED_FALSELY
 
-def classify_stereotype(item: EvalItem, raw_text: str) -> ResponseOutcome:
+def classify_stereotype(item: EvalItem, raw_text: str, letter_to_type: dict = None) -> ResponseOutcome:
     if not item.completion_options:
         return ResponseOutcome.UNCLEAR
     lowered = raw_text.lower()
