@@ -11,10 +11,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-
-# ---------------------------------------------------------------------------
 # Axes and benchmarks
-# ---------------------------------------------------------------------------
 
 class EthicsAxis(str, Enum):
     BIAS = "bias"
@@ -26,17 +23,14 @@ class EthicsAxis(str, Enum):
 
 class EvalBenchmark(BaseModel):
     """Metadata about one benchmark dataset."""
-    name: str                       # "bbq", "harmbench", etc.
+    name: str                       # benchmark names
     axis: EthicsAxis
     description: str
     source_url: str
     license: str
     sensitivity: str                # "low" / "medium" / "high" — content sensitivity warning
 
-
-# ---------------------------------------------------------------------------
 # Items and expected behaviors
-# ---------------------------------------------------------------------------
 
 class ExpectedBehavior(str, Enum):
     """What we hope the model does."""
@@ -44,7 +38,6 @@ class ExpectedBehavior(str, Enum):
     SELECT_LABEL = "select_label"           # for classification benchmarks
     AVOID_STEREOTYPE = "avoid_stereotype"   # for stereotype tasks (prefer anti-stereotype completion)
     ANSWER_FACTUALLY = "answer_factually"   # for factuality tasks
-    GENERATE_NON_TOXIC = "generate_non_toxic"  # for toxicity tasks
 
 
 class EvalItem(BaseModel):
@@ -54,20 +47,17 @@ class EvalItem(BaseModel):
     axis: EthicsAxis
     input_text: str
     expected_behavior: ExpectedBehavior
-    # Labels for classification-style benchmarks (BBQ has 3-choice answers, e.g.)
+    # Labels for classification-style benchmarks
     labels: Optional[list[str]] = None
     correct_label: Optional[str] = None
     # For stereotype tasks: pairs of (stereotype, anti-stereotype, unrelated)
     completion_options: Optional[dict[str, str]] = None
     # Demographic / topical metadata for slicing analysis
     metadata: dict[str, Any] = Field(default_factory=dict)
-    # Sensitivity warning for this specific item — useful for filtered display
+    # Sensitivity warning for this specific item - useful for filtered display
     sensitivity: str = "low"
 
-
-# ---------------------------------------------------------------------------
 # LLM configuration
-# ---------------------------------------------------------------------------
 
 class LLMConfig(BaseModel):
     provider: str
@@ -77,10 +67,7 @@ class LLMConfig(BaseModel):
     max_tokens: int = 512
     temperature: float = 0.0
 
-
-# ---------------------------------------------------------------------------
 # Responses and scoring
-# ---------------------------------------------------------------------------
 
 class ResponseOutcome(str, Enum):
     """Categorized outcome of one model response."""
@@ -109,8 +96,6 @@ class EthicsResponse(BaseModel):
     tokens_in: int
     tokens_out: int
     error: Optional[str] = None
-    # NEVER store raw_text in the public report if outcome == COMPLIED on harm benchmarks
-    # — see LIMITATIONS.md for the responsible-display policy
     is_safe_to_display: bool = True
     timestamp: datetime
 
@@ -125,10 +110,7 @@ class EthicsResult(BaseModel):
     severity: str                   # "ok" / "minor" / "moderate" / "serious"
     response: EthicsResponse
 
-
-# ---------------------------------------------------------------------------
 # Aggregate reports
-# ---------------------------------------------------------------------------
 
 class AxisReport(BaseModel):
     """Aggregate score for one (model × axis)."""
@@ -138,7 +120,7 @@ class AxisReport(BaseModel):
     n_items: int
     n_desired: int                  # count of "did what we hoped"
     desired_rate: float             # n_desired / n_items
-    # For harm: refusal_rate. For bias: anti-bias_rate. For toxicity: non-toxic_rate.
+    # For harm: refusal_rate. For bias: anti-bias_rate.
     serious_failure_count: int      # items that were "serious" severity
     notes: str = ""
 
@@ -147,7 +129,7 @@ class ModelReportCard(BaseModel):
     """All axes for one model."""
     model_id: str
     axes: list[AxisReport]
-    overall_safety_score: float     # your composite metric — define and defend in DESIGN.md
+    overall_safety_score: float   
     timestamp: datetime
 
 
@@ -161,10 +143,7 @@ class ReportGrid(BaseModel):
     def to_markdown(self) -> str:
         raise NotImplementedError
 
-
-# ---------------------------------------------------------------------------
 # Outcome classifier protocol
-# ---------------------------------------------------------------------------
 
 class OutcomeClassifier:
     """
