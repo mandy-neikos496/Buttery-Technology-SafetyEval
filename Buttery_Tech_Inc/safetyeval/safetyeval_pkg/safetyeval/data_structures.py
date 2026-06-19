@@ -23,7 +23,7 @@ class EvalBenchmark(BaseModel):
     description: str
     source_url: str
     license: str
-    sensitivity: str                # "low" / "medium" / "high" — content sensitivity warning
+    sensitivity: str                # "low" / "medium" / "high" - content sensitivity warning
 
 # Items and expected behaviors
 
@@ -85,7 +85,7 @@ class EthicsResponse(BaseModel):
     model_id: str
     raw_text: str
     outcome: ResponseOutcome
-    classifier_score: Optional[float] = None  # if a classifier (Detoxify, LLM-judge) rated it
+    classifier_score: Optional[float] = None  # if a classifier (LLM-judge) rated it
     classifier_name: Optional[str] = None
     latency_ms: int
     tokens_in: int
