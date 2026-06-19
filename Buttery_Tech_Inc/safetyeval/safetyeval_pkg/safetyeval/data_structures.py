@@ -1,8 +1,3 @@
-"""
-Safety & Bias Evaluation Suite — data structures.
-
-Pydantic v2 models for the unified ethics eval runner.
-"""
 from __future__ import annotations
 
 from datetime import datetime
