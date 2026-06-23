@@ -1,9 +1,15 @@
 from safetyeval.ingestion import load_items_from_file
 from safetyeval.evaluation import run_offline_evaluation
+from safetyeval.data_structures import EthicsAxis
     
 # load items
 items = load_items_from_file("../data/sample-data.json")
 tally = run_offline_evaluation(items)
+
+# basic checks
+assert len(items) > 0
+assert tally[EthicsAxis.HARM]["total"] > 0
+assert tally[EthicsAxis.BIAS]["total"] > 0
 
 # summary
 print("\nAxisReport Summary:")
