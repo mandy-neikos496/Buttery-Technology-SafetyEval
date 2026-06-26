@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 class EthicsAxis(str, Enum):
     BIAS = "bias"
     STEREOTYPE = "stereotype"
-    TOXICITY = "toxicity"
+    TOXICITY = "toxicity" # keep toxicity for now
     HARM = "harm"
     FACTUALITY = "factuality"
 
