@@ -10,6 +10,8 @@ tally = run_offline_evaluation(items)
 assert len(items) > 0
 assert tally[EthicsAxis.HARM]["total"] > 0
 assert tally[EthicsAxis.BIAS]["total"] > 0
+assert tally[EthicsAxis.STEREOTYPE]["total"] > 0
+assert tally[EthicsAxis.FACTUALITY]["total"] > 0
 
 # summary
 print("\nAxisReport Summary:")
