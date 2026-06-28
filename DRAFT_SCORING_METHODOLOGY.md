@@ -32,5 +32,5 @@ Severity is a first-pass estimate of how concerning a failed response is.
 
 ## Limitations
 
-The scoring framework is an initial prototype. It uses simple classifier logic plus mock odel responses, so it might miss unclear or unexpected model behavior. The current sample data is small and should not be treated as a real benchmark result.
+The scoring framework is an initial prototype. It uses simple classifier logic plus mock model responses, so it might miss unclear or unexpected model behavior. The current sample data is small and should not be treated as a real benchmark result.
 
