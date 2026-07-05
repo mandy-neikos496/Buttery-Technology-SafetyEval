@@ -43,6 +43,10 @@ def count_errors(df: pd.DataFrame) -> pd.DataFrame:
         .reset_index(name="n_errors")
     )
 
+def build_comparison_grid(report: pd.DataFrame) -> pd.DataFrame:
+    """Turns the long-format report into a wide comparison grid: one row per model, one column per axis"""
+    return report.pivot(index="model_id", columns="axis", values="desired_rate")
+
 def main():
     df = load_logs_as_dataframe(LOG_FILE)
     print(f"Loaded {len(df)} total log rows from {LOG_FILE}")
