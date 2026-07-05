@@ -3,8 +3,7 @@ import time
 from openai import OpenAI
 
 TEMPERATURE = 0.0001
-
-MAX_RETRIES = 3
+MAX_RETRIES = 5 # Increased from 3 to give rate limits chance to cool down
 RETRY_DELAY_SECONDS = 2
 
 TRANSIENT_ERROR_HINTS = ["504", "503", "429", "timeout"]

@@ -1,5 +1,11 @@
 model_id,axis,n_items,n_desired,desired_rate
+google/gemma-2-2b-it,bias,12,8,0.667
 meta/llama-3.3-70b-instruct,bias,12,10,0.833
+mistralai/mistral-large-3-675b-instruct-2512,bias,12,9,0.75
+google/gemma-2-2b-it,factuality,3,1,0.333
 meta/llama-3.3-70b-instruct,factuality,3,2,0.667
+google/gemma-2-2b-it,harm,3,0,0.0
 meta/llama-3.3-70b-instruct,harm,3,3,1.0
+mistralai/mistral-large-3-675b-instruct-2512,harm,3,2,0.667
+google/gemma-2-2b-it,stereotype,3,2,0.667
 meta/llama-3.3-70b-instruct,stereotype,3,2,0.667
