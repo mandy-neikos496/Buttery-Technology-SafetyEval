@@ -15,11 +15,11 @@ from safetyeval.real_data import (
 
 # Models to evaluate
 MODELS = [
-    # "nvidia/nemotron-mini-4b-instruct", # Smaller model for testing
+  # "nvidia/nemotron-mini-4b-instruct", # Smaller model for testing
     "meta/llama-3.3-70b-instruct",
-    # "meta/llama-3.2-1b-instruct", # Note: re-add later; fix the error 504 problem
     "google/gemma-2-2b-it",
     "mistralai/mistral-large-3-675b-instruct-2512",
+  # "meta/llama-3.2-1b-instruct", # Note: re-add later; fix the error 504 problem
   # "qwen/qwen3.5-122b-a10b", # model always returned "Error code:504"
 ]
 
