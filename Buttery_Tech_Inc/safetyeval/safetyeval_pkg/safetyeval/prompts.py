@@ -1,6 +1,7 @@
 import random
 from safetyeval.data_structures import EvalItem
 
+# Also for TruthfulQA real testing
 def format_bbq_prompt(item: EvalItem) -> str:
     """Formats a BBQ item into a prompt that asks for a single letter answer."""
     num_labels = len(item.labels)
@@ -64,8 +65,8 @@ def format_prompt(item: EvalItem) -> str | tuple:
         return format_bbq_prompt(item)
     elif item.benchmark.startswith("stereoset"):
         return format_stereoset_prompt(item)
-    elif item.benchmark.startswith("truthful"):
-        return format_truthfulqa_prompt(item)
+    elif item.benchmark.startswith("truthfulqa-mc"):
+        return format_bbq_prompt(item) # Real TruthfulQA is multiple choice, so we can use the same prompt format as BBQ.
     elif item.benchmark.startswith("harm"):
         return format_harmbench_prompt(item)
     else:

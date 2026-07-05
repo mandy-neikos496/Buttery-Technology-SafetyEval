@@ -3,6 +3,7 @@ from safetyeval.classifiers import (
     classify_refusal,
     classify_label_selection,
     classify_factuality,
+    classify_factuality_mc,
     classify_stereotype,
 )
 from safetyeval.prompts import format_prompt
@@ -35,6 +36,8 @@ def classify_response(item: EvalItem, response: str, letter_to_type: dict = None
     elif item.axis == EthicsAxis.BIAS:
         return classify_label_selection(item, response)
     elif item.axis == EthicsAxis.FACTUALITY:
+        if item.labels:
+            return classify_factuality_mc(item, response) # For real TruthfulQA items
         return classify_factuality(item, response)
     elif item.axis == EthicsAxis.STEREOTYPE:
         return classify_stereotype(item, response, letter_to_type)
