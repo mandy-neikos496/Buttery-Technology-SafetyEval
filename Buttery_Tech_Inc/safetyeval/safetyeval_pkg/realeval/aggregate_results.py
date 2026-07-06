@@ -7,13 +7,20 @@ log_files = glob.glob("run_*.jsonl")
 if not log_files:
     raise FileNotFoundError("No log files found matching 'run_*.jsonl.")
 
-LOG_FILE = max(log_files, key=os.path.getctime)
-print(f"Automatically analyzing the latest run file: {LOG_FILE}")
+print(f"Found {len(log_files)} run file(s): {', '.join(log_files)}")
 
-def load_logs_as_dataframe(path: str) -> pd.DataFrame:
-    df = pd.read_json(path, lines=True)
-    return df
+def load_logs_as_dataframe(paths: list[str]) -> pd.DataFrame:
+    """ 
+    Loads and combines every run_*.jsonl file, not just the latest one. If the same (model_id, item_id) pair shows up in more than one file, 
+    the newest timestamp wins and older duplicates are dropped.
+    """
+    frame = [pd.read_json(path, lines=True) for path in paths]
+    combined = pd.concat(frame, ignore_index=True)
 
+    combined = combined.sort_values("timestamp")
+    combined = combined.drop_duplicates(subset=["model_id", "item_id"], keep="last")
+
+    return combined
 
 def compute_axis_reports(df: pd.DataFrame) -> pd.DataFrame:
     scoreable = df[df["parsed_outcome"] != "error"].copy()
@@ -47,15 +54,36 @@ def count_errors(df: pd.DataFrame) -> pd.DataFrame:
 
 def build_comparison_grid(report: pd.DataFrame) -> pd.DataFrame:
     """Turns the long-format report into a wide comparison grid: one row per model, one column per axis"""
-    return report.pivot(index="model_id", columns="axis", values="desired_rate")
+    grid = report.pivot(index="model_id", columns="axis", values="desired_rate_%")
+
+    grid = grid.fillna("N/A")
+
+    grid = grid.reset_index()
+    grid.columns.name = None
+
+    return grid
 
 def main():
-    df = load_logs_as_dataframe(LOG_FILE)
-    print(f"Loaded {len(df)} total log rows from {LOG_FILE}")
+    df = load_logs_as_dataframe(log_files)
+
+    VALID_MODELS = [
+        "meta/llama-3.3-70b-instruct",
+        "google/gemma-2-2b-it",
+        "mistralai/mistral-large-3-675b-instruct-2512",
+        "qwen/qwen3.5-122b-a10b",
+    ]
+
+    df = df[df["model_id"].isin(VALID_MODELS)].copy()
+
+    print(f"Loaded {len(df)} total log rows (after de-duplicating across files and filtering for valid models)")
 
     report = compute_axis_reports(df)
     print("\n Aggregate scores (model x axis)")
     print(report.to_string(index=False))
+
+    grid = build_comparison_grid(report)
+    print("\n Comparison grid (model x axis)")
+    print(grid.to_string(index=False))
 
     errors = count_errors(df)
     if not errors.empty:
@@ -63,7 +91,9 @@ def main():
         print(errors.to_string(index=False))
 
     report.to_csv("axis_report_summary.csv", index=False)
-    print("\nSaved summary to axis_report_smmary.csv")
+    grid.to_csv("comparison_grid.csv", index=False)
+    print("\nSaved long-format summary to axis_report_summary.csv")
+    print("Saved comparison grid to comparison_grid.csv")
 
 if __name__ == "__main__":
     main()
