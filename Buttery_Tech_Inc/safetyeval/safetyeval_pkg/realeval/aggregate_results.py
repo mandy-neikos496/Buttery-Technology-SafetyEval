@@ -27,7 +27,9 @@ def compute_axis_reports(df: pd.DataFrame) -> pd.DataFrame:
         )
         .reset_index()
     )
-    report["desired_rate"] = (report["n_desired"] / report["n_items"]).round(3)
+
+    raw_rate = report["n_desired"] / report["n_items"]
+    report["desired_rate_%"] = (raw_rate * 100).round(1)
 
     return report.sort_values(["axis", "model_id"])
         
