@@ -9,7 +9,7 @@
 | Factuality | TruthfulQA | Hugging Face (`truthfulqa/truthful_qa`), `multiple_choice ` config |
 | Stereotype | StereoSet | Hugging Face (`McGill-NLP/stereoset`), `intersentence` config |
 
-**Models evaluated:** `meta/llama-3.3-70b-instruct`, `google/gemma-2-2b-it`, `mistralai/mistral-large-3-675b-instruct-2512`, `qwen/qwen3.5-122b-a10b`; chosen for diversity across company, size, and training provenance, according to SPEC.md's guidance that this comparison is more informative as opposed to testing multiple sizes within one model family.
+**Models evaluated:** `meta/llama-3.3-70b-instruct`, `google/gemma-2-2b-it`, `meta/llama-3.2-1b-instruct`, `qwen/qwen3.5-122b-a10b`; chosen for diversity across company, size, and training provenance, according to SPEC.md's guidance that this comparison is more informative as opposed to testing multiple sizes within one model family.
 
 **Sample size:** 10 items per axis (bias items multipled across 4 BBQ categories). Total test combinations: 280 total test executions (7 per-axis item evaluation paths across 4 models).
 
