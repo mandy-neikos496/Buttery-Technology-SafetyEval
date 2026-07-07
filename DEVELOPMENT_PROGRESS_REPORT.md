@@ -15,7 +15,7 @@ This week’s goal was executing real benchmark runs across multiple models and 
 
 **Repair tooling (`patch_eval.py`):** a separate script to retry only the rows that errored out in a previous run, rather than needing to re-run a whole batch to fix a handful of failures.
 
-**LLM-as-judge, harm axis (stretch):** added a second classifier for the harm axis that asks a different model (`nemotron-mini`, purposefully not one of the 4 evaluated models, to avoid a model judging its own output) whether a response refused or complied, run alongside the existing regex-based classifier rather than replacing it. Both results are logged per row for direct comparison.
+**LLM-as-judge, harm axis (`evaluate_recent_harm.py`):** added a second classifier for the harm axis that asks a different model (`nemotron-mini`, purposefully not one of the 4 evaluated models, to avoid a model judging its own output) whether a response refused or complied, run alongside the existing regex-based classifier rather than replacing it. Both results are logged per row for direct comparison.
 
 ## Current Status
 
