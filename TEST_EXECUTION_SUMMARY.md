@@ -35,8 +35,6 @@ This is a real account of problems that were encountered during testing, not a c
 
 6. **Empty model responses (crash).** One model (`qwen3.5-122b-a10b `, a model that can spend part of its token budget on internal reasoning before producing a visible answer) occasionally returned no content at all with a small `max_tokens` budget, which crashed the pipeline when it assumed text would always be present. Resolved with a defensive check that treats an empty response as valid (if unhelpful) data rather than crashing.
 
-7. **Unresolved: persistent endpoint failure.** `llama-3.2-1b-instruct` returned timeout errors on every attempt across more than 4 separate runs and several hours, including a final isolated single-call test performed specifically to check for recovery. Unlike the other problems noted above, no configuration change resolved this. Documented as a known infrastructure limitatino rather than a code defect, and deferred rather than continuing to re-attempt over and over again.
-
 8. ## Data integrity notes
 
 9. - Errored API calls are excluded from desired-behavior-rate calculations (an error means the model did not even have the opportunity to respond, which is distinct from responding not desirably).
