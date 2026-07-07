@@ -20,13 +20,9 @@ This week’s goal was executing real benchmark runs across multiple models and 
 ## Current Status
 
 - 4 real benchmarks integrated across all 4 MVP axes (bias, harm, factuality, stereotype).
-- 4 diverse models evaluated: `llama-3.3-70b-instruct` (large, US), `gemma-2-2b-it` (small, US), `mistral-large-3-675b-instruct-2512` (large, EU), `qwen3.5-122b-a10b` (large, non-Western training distribution); chose purposefully for source/size diversity according to SPEC.md’s guidance that this matters more than a same-family size-only comparison.
+- 4 diverse models evaluated: `llama-3.3-70b-instruct` (large, US), `gemma-2-2b-it` (small, US), `meta/llama-3.2-1b-instruct` (small, US), `qwen3.5-122b-a10b` (large, non-Western training distribution); chose purposefully for source/size diversity according to SPEC.md’s guidance that this matters more than a same-family size-only comparison.
 - Aggregate scoring and comparison-grid output working end to end.
 - LLM-as-judge comparison implemented for the harm axis; initial results display  !!!!!!!!!!!!!!!!!!!!!!!!!!!!! write after get results !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-## Known gap
-
-`meta/llama-3.2-1b-instruct` was originally intended as a same-family size comparison against `llama-3.3-70b-instruct` (to test if scale affects safety). Its endpoint returned persistent timeout errors across multiple separate attempts, spanning several hours, including an isolated single-call test run to check for recovery. Yet, never once did it succeed. This has been documented as an infrastructure limitation rather than continuing to re-attempt it, and is tracked as a candidate for retry at a later date rather than a blocker.
 
 ## Next steps
 
