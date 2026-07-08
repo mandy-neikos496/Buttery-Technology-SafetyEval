@@ -63,13 +63,34 @@ def build_comparison_grid(report: pd.DataFrame) -> pd.DataFrame:
 
     return grid
 
+def analyze_harm_judge_agreement(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Compares the regex-based refusal classifier against LLM judge for harm-axis rows only.
+    Returns just the rows where the two disagreed.
+    """
+    harm_rows = df[df["axis"] == "harm"].copy()
+
+    judged_rows = harm_rows.dropna(subset=["llm_judge_outcome"])
+
+    if judged_rows.empty:
+        print("\nNo llm_judge_outcome data found -> judge classifier was not run on this data.")
+        return pd.DataFrame()
+    
+    agree = (harm_rows["parsed_outcome"] == harm_rows["llm_judge_outcome"]).sum()
+    total = len(harm_rows)
+    print(f"\nRegex vs. LLM judge agreement (harm axis): {agree}/{total} rows agree"
+          f"({len(harm_rows) - total} harm row(s) skipped; no judge data)")
+
+    disagreements = harm_rows[harm_rows["parsed_outcome"] != harm_rows["llm_judge_outcome"]]
+    return disagreements[["model_id", "item_id", "parsed_outcome", "llm_judge_outcome"]]
+
 def main():
     df = load_logs_as_dataframe(log_files)
 
     VALID_MODELS = [
         "meta/llama-3.3-70b-instruct",
         "google/gemma-2-2b-it",
-        "mistralai/mistral-large-3-675b-instruct-2512",
+        "meta/llama-3.2-1b-instruct",
         "qwen/qwen3.5-122b-a10b",
     ]
 
@@ -89,6 +110,11 @@ def main():
     if not errors.empty:
         print("\n Errored calls (excluded from scores above)")
         print(errors.to_string(index=False))
+
+    disagreements = analyze_harm_judge_agreement(df)
+    if not disagreements.empty:
+        print("\n Disagreements between regex and LLM judge:")
+        print(disagreements.to_string(index=False))
 
     report.to_csv("axis_report_summary.csv", index=False)
     grid.to_csv("comparison_grid.csv", index=False)

@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from safetyeval.prompts import format_prompt
 from safetyeval.evaluation import classify_response, desired_outcomes
+from safetyeval.classifiers import classify_refusal_llm_judge
 from safetyeval.nvidia_client import call_nvidia
 from safetyeval.data_structures import EthicsAxis
 from safetyeval.real_data import (
@@ -18,13 +19,13 @@ MODELS = [
   #  "nvidia/nemotron-mini-4b-instruct", # Smaller model for testing
     "meta/llama-3.3-70b-instruct",
     "google/gemma-2-2b-it",
-    "mistralai/mistral-large-3-675b-instruct-2512",
-  # "meta/llama-3.2-1b-instruct", # Note: use this if it works
+ #   "mistralai/mistral-large-3-675b-instruct-2512", # Note: use this if it works 
+    "meta/llama-3.2-1b-instruct", # Note: use this if it works
     "qwen/qwen3.5-122b-a10b", # Note: use this if it works
 ]
 
 # How many items to pull per axis.
-ITEMS_PER_AXIS = 3
+ITEMS_PER_AXIS = 10
 
 # Creates a unique filename for each individual execution session (for data organization)
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M")
@@ -57,6 +58,11 @@ def process_item(item, model_id):
         outcome = classify_response(item, raw_text, letter_to_type)
         is_desired = outcome == desired_outcomes.get(item.axis)
 
+        # For harm-axis items only
+        judge_outcome = None
+        if item.axis == EthicsAxis.HARM:
+            judge_outcome = classify_refusal_llm_judge(item, raw_text)
+        
         # Never log raw harm-axis responses
         safe_raw_response = (
             "[hidden for safety]" if item.axis == EthicsAxis.HARM else raw_text
@@ -72,6 +78,7 @@ def process_item(item, model_id):
             "model_id": model_id,
             "raw_response": safe_raw_response,
             "parsed_outcome": outcome.value,
+            "llm_judge_outcome": judge_outcome.value if judge_outcome else None,
             "is_desired_behavior": is_desired,
             "latency_ms": api_result["latency_ms"],
             "error": None,
@@ -87,6 +94,7 @@ def process_item(item, model_id):
             "model_id": model_id,
             "raw_response": None,
             "parsed_outcome": "error",
+            "llm_judge_outcome": None,
             "is_desired_behavior": False,
             "latency_ms": None,
             "error": str(exc),

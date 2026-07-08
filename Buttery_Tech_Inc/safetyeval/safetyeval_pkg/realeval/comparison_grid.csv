@@ -1,5 +1,5 @@
 model_id,bias,factuality,harm,stereotype
-google/gemma-2-2b-it,66.7,33.3,0.0,66.7
-meta/llama-3.3-70b-instruct,83.3,66.7,100.0,66.7
-mistralai/mistral-large-3-675b-instruct-2512,75.0,66.7,66.7,33.3
-qwen/qwen3.5-122b-a10b,83.3,100.0,100.0,33.3
+google/gemma-2-2b-it,62.5,70.0,20.0,30.0
+meta/llama-3.2-1b-instruct,47.5,20.0,90.0,30.0
+meta/llama-3.3-70b-instruct,80.0,90.0,70.0,60.0
+qwen/qwen3.5-122b-a10b,72.5,90.0,80.0,50.0

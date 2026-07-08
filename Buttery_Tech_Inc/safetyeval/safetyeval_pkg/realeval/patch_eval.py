@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from safetyeval.prompts import format_prompt
 from safetyeval.evaluation import classify_response, desired_outcomes
+from safetyeval.classifiers import classify_refusal_llm_judge
 from safetyeval.nvidia_client import call_nvidia
 from safetyeval.data_structures import EthicsAxis
 from safetyeval.real_data import (
@@ -17,8 +18,8 @@ from safetyeval.real_data import (
     load_real_stereoset_items,
 )
 
-# Note: match ITEMS_PERAXIS used in run_live_multi_model_eval.py
-ITEMS_PER_AXIS = 3
+# Note: match ITEMS_PER_AXIS used in run_live_multi_model_eval.py
+ITEMS_PER_AXIS = 10
 
 def get_latest_log_file():
     log_files = glob.glob("run_*.jsonl")
@@ -40,36 +41,40 @@ def call_and_score(item, model_id):
     formatted = format_prompt(item)
     prompt, letter_to_type = formatted if isinstance(formatted, tuple) else (formatted, None)
 
-    try: 
-        api_result = call_nvidia(prompt, model_id=model_id)
-        raw_text = api_result["raw_text"]
-        outcome = classify_response(item, raw_text, letter_to_type)
+    max_retries = 4
+    base_backoff_seconds = 30.0
 
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "item_id": item.id,
+    for attempt in range(max_retries + 1):
+        try: 
+            api_result = call_nvidia(prompt, model_id=model_id)
+            raw_text = api_result["raw_text"]
+            outcome = classify_response(item, raw_text, letter_to_type)
+
+            return {
+                "timestamp": datetime.now().isoformat(),
+                "item_id": item.id,
+                    "benchmark": item.benchmark,
+                    "axis": item.axis.value,
+                    "model_id": model_id,
+                    "raw_response": "[hidden for safety]" if item.axis == EthicsAxis.HARM else raw_text,
+                    "parsed_outcome": outcome.value,
+                    "is_desired_behavior": outcome == desired_outcomes.get(item.axis),
+                    "latency_ms": api_result["latency_ms"],
+                    "error": None,
+            }
+        except Exception as exc:
+            return {
+                "timestamp": datetime.now().isoformat(),
+                "item_id": item.id,
                 "benchmark": item.benchmark,
                 "axis": item.axis.value,
                 "model_id": model_id,
-                "raw_response": "[hidden for safety]" if item.axis == EthicsAxis.HARM else raw_text,
-                "parsed_outcome": outcome.value,
-                "is_desired_behavior": outcome == desired_outcomes.get(item.axis),
-                "latency_ms": api_result["latency_ms"],
-                "error": None,
-        }
-    except Exception as exc:
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "item_id": item.id,
-            "benchmark": item.benchmark,
-            "axis": item.axis.value,
-            "model_id": model_id,
-            "raw_response": None,
-            "parsed_outcome": "error",
-            "is_desired_behavior": False,
-            "latency_ms": None,
-            "error": str(exc),
-        }
+                "raw_response": None,
+                "parsed_outcome": "error",
+                "is_desired_behavior": False,
+                "latency_ms": None,
+                "error": str(exc),
+            }
     
 def main():
     try:
@@ -111,14 +116,15 @@ def main():
     print(f"Retrying {len(retry_tasks)} failed combination(s), one at a time...")
 
     new_rows = []
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        futures = [executor.submit(call_and_score, item, model_id) for item, model_id in retry_tasks]
-        for future in as_completed(futures):
-            result = future.result()
-            new_rows.append(result)
-            print(f" {result['model_id']} / {result['item_id']}: {result['parsed_outcome']}")
-            time.sleep(1.0)
+    
+    for idx, (item, model_id) in enumerate(retry_tasks):
+        print(f"\n[Progress {idx+1}/{len(retry_tasks)}] Preparing request for {model_id}...")
 
+        time.sleep(20.0)
+
+        result = call_and_score(item, model_id)
+        new_rows.append(result)
+        print(f" Finished: {result['model_id']} / {result['item_id']}: {result['parsed_outcome']}")
     # Replace the file
     with open(log_file, "w", encoding="utf-8") as f:
         for row in keep_rows + new_rows:
