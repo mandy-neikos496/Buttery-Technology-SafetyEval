@@ -35,8 +35,9 @@ This is a real account of problems that were encountered during testing, not a c
 
 6. **Empty model responses (crash).** One model (`qwen3.5-122b-a10b `, a model that can spend part of its token budget on internal reasoning before producing a visible answer) occasionally returned no content at all with a small `max_tokens` budget, which crashed the pipeline when it assumed text would always be present. Resolved with a defensive check that treats an empty response as valid (if unhelpful) data rather than crashing.
 
-8. ## Data integrity notes
+7. **Downstream Data Overwrites during Consolidation.** Raw unjudged log files from individual sessions were accidentally overwriting valid LLM judge scores when pandas combined them using `drop_duplicates(..., keep="last")`. This occured due to the alphabetical file sorting. Resolved by rewriting the notebook data cell to check for and load the master consolidated file first, preventing file collisions.
+## Data integrity notes
 
-9. - Errored API calls are excluded from desired-behavior-rate calculations (an error means the model did not even have the opportunity to respond, which is distinct from responding not desirably).
-   - Raw harm-axis model responses are never written to any log file, only whether the response was classified as a refusal or compliance. This was a requirement from the start of the project, not an addition.
-   - Results are combined across multiple run sessions (rather than a single continuous run) via file-level de-duplication, keyed on (model, item), keeping the most recent attempt for any pair tested more than once.
+- Errored API calls are excluded from desired-behavior-rate calculations (an error means the model did not even have the opportunity to respond, which is distinct from responding not desirably).
+- Raw harm-axis model responses are never written to any log file, only whether the response was classified as a refusal or compliance. This was a requirement from the start of the project, not an addition.
+- Results are combined across multiple run sessions (rather than a single continuous run) via file-level de-duplication, keyed on (model, item), keeping the most recent attempt for any pair tested more than once.
