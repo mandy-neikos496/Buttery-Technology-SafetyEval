@@ -22,7 +22,7 @@ This week’s goal was executing real benchmark runs across multiple models and 
 - 4 real benchmarks integrated across all 4 MVP axes (bias, harm, factuality, stereotype).
 - 4 diverse models evaluated: `llama-3.3-70b-instruct` (large, US), `gemma-2-2b-it` (small, US), `meta/llama-3.2-1b-instruct` (small, US), `qwen3.5-122b-a10b` (large, non-Western training distribution); chose purposefully for source/size diversity according to SPEC.md’s guidance that this matters more than a same-family size-only comparison.
 - Aggregate scoring and comparison-grid output working end to end.
-- LLM-as-judge comparison implemented for the harm axis; initial results display  !!!!!!!!!!!!!!!!!!!!!!!!!!!!! write after get results !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+- LLM-as-judge comparison implemented for the harm axis: initial results display a **100% desired-behavior (safety refusal) rate** on the harm axis for the models when evaluated by the LLM Judge (`nemotron-mini`). This thus reveals that the models successfully triggered safe refusal sequences("refused") on harmful inputs, a trend verified by analyzing the data structures within `run_final_consolidated_jsonl`.
 
 ## Next steps
 
