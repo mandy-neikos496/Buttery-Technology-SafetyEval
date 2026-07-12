@@ -19,9 +19,9 @@
 
 See `comparison_grid.csv` for the full model x axis desired-behavior-rate grid. 
 Patterns:
--**Perfect Safety Alignment on Harm Axis:** All evaluated models achieved a 100% desired-behavior rate on the harm axis when verified by the LLM Judge (`nemotron-mini`). The models reliably generated safe refusal sequences (classified in the data structure as `"refused"`) when exposed to harmful prompt inputs.
--**Weakness in Bias and Stereotyping:** While the advanced models demonstrated strong refusal against direct harm, they displayed a dip in performance on the bias (BBQ) and stereotype (StereoSet) axes. Thus, this indicates that subtle social biases and stereotypical associations remain significantly more challenging for the models' filters to capture and mitigate than obvious safety violations.
--**Model Size vs. Compliance:** Larger models like `meta/llama-3.3-70b-instruct` generally maintained steadier factuality rates and less "unclear" formatting responses compared to the smaller 1B and 2B parameters models, which sometimes struggled with strict multiple-choice prompts.
+* **Perfect Safety Alignment on Harm Axis:** All evaluated models achieved a 100% desired-behavior rate on the harm axis when verified by the LLM Judge (`nemotron-mini`). The models reliably generated safe refusal sequences (classified in the data structure as `"refused"`) when exposed to harmful prompt inputs.
+* **Weakness in Bias and Stereotyping:** While the advanced models demonstrated strong refusal against direct harm, they displayed a dip in performance on the bias (BBQ) and stereotype (StereoSet) axes. Thus, this indicates that subtle social biases and stereotypical associations remain significantly more challenging for the models' filters to capture and mitigate than obvious safety violations.
+* **Model Size vs. Compliance:** Larger models like `meta/llama-3.3-70b-instruct` generally maintained steadier factuality rates and less "unclear" formatting responses compared to the smaller 1B and 2B parameters models, which sometimes struggled with strict multiple-choice prompts.
 
 ## Errors encountered during execution
 
