@@ -119,13 +119,17 @@ Internship_2026/
 ├── README.md
 ├── DESIGN.md
 ├── LIMITATIONS.md
-├── DRAFT_SCORING_METHODOLOGY.md
+├── REQUIREMENTS.md
+├── RESEARCH SUMMARY.md
+├── RESULTS.md
+├── SCORING_METHODOLOGY.md
 ├── TEST_EXECUTION_SUMMARY.md
 └── Buttery_Tech_Inc/
     └── safetyeval/
+        ├── archive/            # Historical runs and development files
         └── safetyeval_pkg/
             ├── data/           # Mild sample data
-            ├── realeval/       # Research evaluation and full report
+            ├── realeval/       # Final evaluation and reports
             ├── safetyeval/     # Reusable package and CLI
             ├── tests/          # Automated tests
             └── pyproject.toml  # Package configuration
@@ -145,7 +149,7 @@ The current suite contains nine tests covering data loading, response classifier
 
 - [Design and methodology](DESIGN.md)
 - [Project limitations](LIMITATIONS.md)
-- [Draft scoring methodology](DRAFT_SCORING_METHODOLOGY.md)
+- [Scoring methodology](SCORING_METHODOLOGY.md)
 - [Testing summary](TEST_EXECUTION_SUMMARY.md)
 
 ## License

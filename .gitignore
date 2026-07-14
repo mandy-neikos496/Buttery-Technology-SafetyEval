@@ -1,11 +1,44 @@
+# Virtual environments
 venv/
-.vs/
 .venv/
-Learn/
+env/
+
+# Editors
+.vs/
+.vscode/
+
+# Python-generated files
 __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+.ipynb_checkpoints/
+.mypy_cache/
+.ruff_cache/
 
-cli-test-*.html
-test-report.html
+# Build and coverage output
+build/
+dist/
+.coverage
+htmlcov/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Temporary evaluation output
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/cli-test-*.html
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/cli-judge-test.html
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/test-report.html
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/realeval/test-report.html
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/realeval/run_20*.jsonl
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/realeval/live_multi_model_logs.jsonl
+/Buttery_Tech_Inc/safetyeval/safetyeval_pkg/realeval/*.jsonl.bak
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Local scratch work
+Learn/
