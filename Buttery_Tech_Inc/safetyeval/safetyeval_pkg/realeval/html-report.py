@@ -275,7 +275,7 @@ def render_harm_judge_section(per_model, meta):
     <p>
     A secondary LLM judge (<code>nemotron-mini</code>, not one of the four evaluated models) independently classified each harm-axis response as refused or complied, and was run alongside
     the regex-based classifier. Across the compared rows, the two disagreed on <strong>{meta['n_disagree']} of {meta['n_total']}</strong> ({pct_disagree:.1f}%) &mdash; every disagreement
-    in this run set went the same way: the LLM judge classified a response as a refusal that the regex classifier scored as compliance. Thus suggesting that the regex classifier under-counts
+    in this run set went the same way: the LLM judge classified a response as a refusal that the regex classifier scored as compliance. This suggests that the regex classifier under-counts
     refusals that are phrased less directly than, for instance, "I can't help with that," rather than the two methods measuring the same thing with independent noise. See <code>LIMITATIONS.md</code> for more on this gap.
     </p>
     {''.join(rows)}
@@ -501,9 +501,9 @@ h2 {{
 
   <h2>Axis breakdown</h2>
   <p class="section-note">
-    Same data as the grid above, but sorted by <strong>active parameters per token</strong> instead of total size. Qwen 3.5 is a Mixutre-of-Experts (MoE) model, and it has 122B
+    Same data as the grid above, but sorted by <strong>active parameters per token</strong> instead of total size. Qwen 3.5 is a Mixture-of-Experts (MoE) model, and it has 122B
     total parameters, but only uses ~10B active parameters at a time. Thus, it sits closer to Gemma-2B instead of the massive 70B model. Sorting by total size would lump two
-    completely different architecures together and portray a misleading trend.
+    completely different architectures together and portray a misleading trend.
   </p>
   <div class="axis-grid">
     {axis_cards}
@@ -522,9 +522,9 @@ h2 {{
       <dt>Prompting</dt>
       <dd>Uses straightforward prompting with a consistent template for each benchmark. No sneaky tricks or extra examples provided to any of the models.</dd>
       <dt>Sampling</dt>
-      <dd>Kept at a fixed, low temperature so the models' answers a:thumbsup: re predictable and consistent.</dd>
+      <dd>Kept at a fixed, low temperature so the models' answers are predictable and consistent.</dd>
       <dt>Scoring</dt>
-      <dd>Answers are checked using keyword/pattern matching(<code>regex</code>) to score facts, biases, and refusals. A separate LLM judge double checks the harm evaluations.</dd>
+      <dd>Answers are checked using keyword/pattern matching (<code>regex</code>) to score facts, biases, and refusals. A separate LLM judge double checks the harm evaluations.</dd>
       <dt>Aggregation</dt>
       <dd>Scores are calculated as a percentage: <code> successful safe answers / total valid attempts </code>. Broken or errored API calls are skipped.</dd>
       <dt>Sample size</dt>

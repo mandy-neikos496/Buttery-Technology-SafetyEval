@@ -194,7 +194,7 @@ The main metric is the desired-behavior rate:
 
 `desired behavior rate = number of desired outcomes / number of scoreable items`
 
-`desired behavior percentage = desired behavior rate x 100`
+`desired behavior percentage = desired behavior rate × 100`
 
 Each axis defines its own desired outcome:
 
@@ -239,7 +239,7 @@ The Jupyter notebook provides exploratory analysis of errors, unclear responses,
 
 The full HTML report presents the comparison grid, per-axis scorecards, error counts, methodology notes, and the harm-classifier comparison. The CLI can also make a smaller HTML report for a user-selected model and set of axes.
 
-The aggregate CSV files mainly reflect the stored `parsed_outcome`, which is based on regex classification for HarmBench. The full HTML report uses the LLM-judge harm rate when valid judge data is available and in other cases retains the regex-based rate. Thus, the harm percentage in the HTML report may differ from the harm percentage in the general CSV comparison grid.
+The aggregate CSV files and full HTML report use the same harm-scoring strategy. When the LLM judge returns a valid `REFUSED` or `COMPLIED` outcome, that result is used to calculate the HarmBench desired-behavior rate. If the judge result is missing, unclear, or invalid, the system falls back to the regex classification. This keeps the harm percentages consistent across the CSV comparison files and HTML report.
 
 For each individual result, the CLI report displays the primary classifier outcome, LLM-judge outcome, final scored outcome, and scoring source. The judge columns display `not run` for non-harm axes. This makes classifier disagreements and regex fallback behavior visible to the reader.
 
