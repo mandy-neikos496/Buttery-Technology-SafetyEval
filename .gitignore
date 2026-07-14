@@ -2,3 +2,10 @@ venv/
 .vs/
 .venv/
 Learn/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+cli-test-*.html
+test-report.html

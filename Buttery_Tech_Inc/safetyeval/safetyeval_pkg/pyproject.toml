@@ -17,3 +17,6 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["safetyeval"]
+
+[project.scripts]
+safetyeval = "safetyeval.cli:main"
