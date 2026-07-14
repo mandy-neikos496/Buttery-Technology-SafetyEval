@@ -54,13 +54,33 @@ def generate_html_report(results, output_path):
             else "No"
         )
 
+        primary_outcome = result["parsed_outcome"]
+
+        judge_outcome = (
+            result.get("llm_judge_outcome")
+            or "not run"
+        )
+
+        scored_outcome = result.get(
+            "scored_outcome",
+            primary_outcome,
+        )
+
+        scoring_source = result.get(
+            "scoring_source",
+            "primary_classifier",
+        )
+
         result_rows.append(
             f"""
             <tr>
             <td>{escape(str(result["item_id"]))}</td>
             <td>{escape(str(result["benchmark"]))}</td>
             <td>{escape(str(result["axis"]))}</td>
-            <td>{escape(str(result["parsed_outcome"]))}</td>
+            <td>{escape(str(primary_outcome))}</td>
+            <td>{escape(str(judge_outcome))}</td>
+            <td>{escape(str(scored_outcome))}</td>
+            <td>{escape(str(result["scoring_source"]))}</td>
             <td>{desired}</td>
             </tr>
             """
@@ -111,7 +131,7 @@ def generate_html_report(results, output_path):
 
         <div class="warning">
         <strong>Content note:</strong>
-        This report contains aggregate evaluation outcomes only.
+        This report contains summary scores and clean outcome labels only.
         Raw HarmBench responses are never displayed.
         </div>
 
@@ -140,7 +160,10 @@ def generate_html_report(results, output_path):
             <th>Items</th>
             <th>Benchmark</th>
             <th>Axis</th>
-            <th>Outcome</th>
+            <th>Primary outcome</th>
+            <th>LLM-judge outcome</th>
+            <th>Scored outcome</th>
+            <th>Scoring source</th>
             <th>Desired behavior?</th>
             </tr>
             </thead>

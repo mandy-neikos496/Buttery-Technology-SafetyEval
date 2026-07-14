@@ -3,8 +3,12 @@ import argparse
 from safetyeval.prompts import format_prompt
 from safetyeval.nvidia_client import call_nvidia
 from safetyeval.evaluation import classify_response, desired_outcomes
-from safetyeval.data_structures import EthicsAxis
+from safetyeval.data_structures import (
+    EthicsAxis,
+    ResponseOutcome,
+)
 from safetyeval.reporting import generate_html_report
+from safetyeval.classifiers import classify_refusal_llm_judge
 
 from safetyeval.real_data import (
     load_real_bbq_items,
@@ -83,13 +87,38 @@ def evaluate_prepared_items(prepared, model_id):
             api_result = call_nvidia(prompt, model_id=model_id)
             raw_text = api_result["raw_text"]
 
-            outcome = classify_response(
+            primary_outcome = classify_response(
                 item,
                 raw_text,
                 letter_to_type,
             )
 
-            is_desired = outcome == desired_outcomes.get(item.axis)
+            judge_outcome = None
+            scored_outcome = primary_outcome
+            scoring_source = "primary_classifier"
+
+            if item.axis == EthicsAxis.HARM:
+                print("Running LLM judge for HarmBench response...")
+
+                try:
+                    judge_outcome = classify_refusal_llm_judge(
+                        item,
+                        raw_text,
+                    )
+                except Exception as judge_error:
+                    print(f"LLM judge failed: {judge_error}")
+                    judge_outcome = ResponseOutcome.UNCLEAR
+
+                if judge_outcome in (
+                    ResponseOutcome.REFUSED,
+                    ResponseOutcome.COMPLIED,
+                ):
+                    scored_outcome = judge_outcome
+                    scoring_source = "llm_judge"
+                else:
+                    scoring_source = "regex_fallback"
+
+            is_desired = scored_outcome == desired_outcomes.get(item.axis)
 
             # Never log raw HarmBench responses
             safe_response = (
@@ -105,14 +134,25 @@ def evaluate_prepared_items(prepared, model_id):
                     "axis": item.axis.value,
                     "model_id": model_id,
                     "raw_response": safe_response,
-                    "parsed_outcome": outcome.value,
+                    "parsed_outcome": primary_outcome.value,
+                    "llm_judge_outcome": (
+                        judge_outcome.value
+                        if judge_outcome is not None
+                        else None
+                    ),
+                    "scored_outcome": scored_outcome.value,
+                    "scoring_source": scoring_source,
                     "is_desired_behavior": is_desired,
                     "latency_ms": api_result["latency_ms"],
                     "error": None,
                 }
             )
 
-            print(f"Outcome: {outcome.value}")
+            print(f"Outcome: {primary_outcome.value} | "
+                  f"Judge={judge_outcome.value if judge_outcome else 'not run'} | "
+                  f"Scored={scored_outcome.value} | "
+                  f"Source={scoring_source}"
+            )
 
         except Exception as exc:
             print(f"Evaluation failed: {exc}")
@@ -125,6 +165,9 @@ def evaluate_prepared_items(prepared, model_id):
                     "model_id": model_id,
                     "raw_response": None,
                     "parsed_outcome": "error",
+                    "llm_judge_outcome": None,
+                    "scored_outcome": "error",
+                    "scoring_source": "evaluation_error",
                     "is_desired_behavior": False,
                     "latency_ms": None,
                     "error": str(exc)
